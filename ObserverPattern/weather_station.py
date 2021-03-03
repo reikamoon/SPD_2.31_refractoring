@@ -82,12 +82,61 @@ class CurrentConditionsDisplay(Observer):
               "and pressure", self.pressure)
         
 # TODO: implement StatisticsDisplay class and ForecastDisplay class.
+
+
+class StatisticsDisplay(Observer):
+    def __init__(self, weather_data):
+        self.temparatures = []
+        self.humidities = []
+        self.pressures = []
+        self.weather_data = weather_data  # save the ref in an attribute.
+        weather_data.registerObserver(self)  # register the observer
+        # so it gets data updates.
+
+    def update(self, temperature, humidity, pressure):
+        self.temparatures.append(temperature)
+        self.humidities.append(humidity)
+        self.pressures.append(pressure)
+        self.display()
+
+    def display(self):
+        print("Temperatures:", min(self.temparatures), "\t", max(
+                  self.temparatures), "\t", sum(self.temparatures)/len(self.temparatures),
+              "Humidity:", min(self.humidities), "\t", max(
+                  self.humidities), "\t", sum(self.humidities)/len(self.humidities),
+              "Pressure:", min(self.pressures), "\t", max(
+                  self.pressures), "\t", sum(self.pressures)/len(self.pressures)
+              )
+
+
+class ForecastDisplay(Observer):
+    def __init__(self, weather_data):
+        self.forecast_temp = 0
+        self.forecast_humidity = 0
+        self.forecast_pressure = 0
+        self.weather_data = weather_data  # save the ref in an attribute.
+        weather_data.registerObserver(self)  # register the observer
+        # so it gets data updates.
+
+    def update(self, temperature, humidity, pressure):
+        self.forecast_temp = temperature + 0.11 * humidity + 0.2 * pressure
+        self.forecast_humadity = humidity - 0.9 * humidity
+        self.forecast_pressure = pressure + 0.1 * temperature - 0.21 * pressure
+        self.display()
+
+    def display(self):
+        print("Temperature:", self.forecast_temp,
+              "Humidity:", self.forecast_humidity,
+              "Pressure:", self.forecast_pressure,)
+
     
     
 class WeatherStation:
     def main(self):
         weather_data = WeatherData()
         current_display = CurrentConditionsDisplay(weather_data)
+        statistics_display = StatisticsDisplay(weather_data)
+        forecast_display = ForecastDisplay(weather_data)
         
         # TODO: Create two objects from StatisticsDisplay class and 
         # ForecastDisplay class. Also register them to the concerete instance
@@ -109,6 +158,8 @@ class WeatherStation:
         # un-register the observer
         weather_data.removeObserver(current_display)
         weather_data.setMeasurements(120, 100,1000)
+        weather_data.removeObserver(forecast_display)
+        weather_data.removeObserver(statistics_display)
     
         
 
