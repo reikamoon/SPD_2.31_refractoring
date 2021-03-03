@@ -107,15 +107,14 @@ def chooseRandomMoveFromList(board, movesList):
         if isSpaceFree(board, i):
             possibleMoves.append(i)
 
-    if len(possibleMoves) != 0:  # TODO: How would you write this pythanically? (You can google for it!)
+    if len(possibleMoves) > 0:  # TODO: How would you write this pythonically? (You can google for it!)
         return random.choice(possibleMoves)
-    else:  # TODO: is this 'else' necessary?
-        return None
 
 
 # TODO: W0621: Redefining name 'computerLetter' from outer scope. Hint: Fix it according to https://stackoverflow.com/a/25000042/81306
 def getComputerMove(board, computerLetter):
     # Given a board and the computer's letter, determine where to move and return that move.
+    global computerLetter
     if computerLetter == 'X':
         playerLetter = 'O'
     else:
